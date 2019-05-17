@@ -1,12 +1,12 @@
 import React from 'react';
-
+import People from './components/People';
 import './App.css';
 
 class App extends React.Component {
   constructor(props){
     super(props);
     this.state = {
-      data: {},
+      data: [],
     }
     this.fetchData = this.fetchData.bind(this);
     this.fetchData()
@@ -28,6 +28,9 @@ class App extends React.Component {
   render() {
     return (
       <div className="App">
+      <People 
+      info={this.state.data}
+      />
       </div>
     );
   }
