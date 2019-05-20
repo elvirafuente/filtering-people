@@ -16,7 +16,7 @@ class People extends React.Component {
             }else {
                 targetPeople = filteredPeople;
             }
-            console.log(targetPeople);
+            console.log(filteredPeople);
             return (
 
                 <ul>

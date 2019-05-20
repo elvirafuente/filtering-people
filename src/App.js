@@ -4,16 +4,20 @@ import Filters from './components/Filters';
 import './App.css';
 
 
+
 class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       data: [],
       city: '',
+      gender: [],
     }
     this.fetchData = this.fetchData.bind(this);
     this.getCityInput = this.getCityInput.bind(this);
-    this.getFilteredByCity = this.getFilteredByCity.bind(this);
+    this.getGenderInput = this.getGenderInput.bind(this);
+
+    this.getFiltered = this.getFiltered.bind(this);
     this.fetchData();
  
   }
@@ -36,29 +40,49 @@ class App extends React.Component {
     })
   }
 
-  getFilteredByCity(){
-        const filteredByCity = this.state.data.filter(item => {
-          const city = item.location.city;
-          if(city.includes(this.state.city)){
-            return true;
-          }else {
-            return false;
-          }
-    });
-    return filteredByCity;
+  getGenderInput(event){
+    const target = event.currentTarget.value;
+    const checked = event.currentTarget.checked;
+    console.log(checked);
+    this.setState(prevState => {
+      return {
+      gender: checked 
+        ? prevState.gender.concat(target) 
+        : prevState.gender.filter( item => item !== target)
+      }
+    })
+    
+
   }
 
+  getFiltered(){
+    const {data, gender} = this.state
+    return data
+        .filter(item => {
+          const city = item.location.city;
+          return city.includes(this.state.city) ? true : false;
+        })
+        .filter(item => {
+          return gender.includes(item.gender) ? true : false;
+        })
+    
+  }
+
+ 
+
+ 
 
   render() {
-    const filteredByCity = this.getFilteredByCity();
+    const filtered = this.getFiltered();
     return (
       <div className="App">
         <Filters
           info={this.state.data} 
-          filter={this.getCityInput}
+          filterCity={this.getCityInput}
+          filterGender={this.getGenderInput}
         />
         <People
-          info={this.state.data} filtered={filteredByCity}
+          info={this.state.data} filtered={filtered}
         />
       </div>
     );
