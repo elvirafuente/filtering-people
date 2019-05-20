@@ -2,6 +2,8 @@ import React from 'react';
 import People from './components/People';
 import Filters from './components/Filters';
 import './App.css';
+import { Route, Switch, Link } from "react-router-dom";
+import PersonDetails from "./components/PersonDetails";
 
 
 
@@ -19,7 +21,7 @@ class App extends React.Component {
 
     this.getFiltered = this.getFiltered.bind(this);
     this.fetchData();
- 
+
   }
 
   fetchData() {
@@ -33,57 +35,82 @@ class App extends React.Component {
       })
   }
 
-  getCityInput(event){
+  getCityInput(event) {
     const target = event.currentTarget.value;
     this.setState({
       city: target,
     })
   }
 
-  getGenderInput(event){
+  getGenderInput(event) {
     const target = event.currentTarget.value;
     const checked = event.currentTarget.checked;
     console.log(checked);
     this.setState(prevState => {
       return {
-      gender: checked 
-        ? prevState.gender.concat(target) 
-        : prevState.gender.filter( item => item !== target)
+        gender: checked
+          ? prevState.gender.concat(target)
+          : prevState.gender.filter(item => item !== target)
       }
     })
-    
+
 
   }
 
-  getFiltered(){
-    const {data, gender} = this.state
+  getFiltered() {
+    const { data, gender } = this.state
     return data
-        .filter(item => {
-          const city = item.location.city;
-          return city.includes(this.state.city) ? true : false;
-        })
-        .filter(item => {
-          return gender.includes(item.gender) ? true : false;
-        })
-    
+      .filter(item => {
+        const city = item.location.city;
+        return city.includes(this.state.city) ? true : false;
+      })
+      .filter(item => {
+        return gender.includes(item.gender) ? true : false;
+      })
+
   }
 
- 
 
- 
+
+
 
   render() {
     const filtered = this.getFiltered();
+
     return (
       <div className="App">
         <Filters
-          info={this.state.data} 
+          info={this.state.data}
           filterCity={this.getCityInput}
           filterGender={this.getGenderInput}
         />
-        <People
-          info={this.state.data} filtered={filtered}
-        />
+        <Switch>
+          <Route
+            exact path="/"
+            render={routerProps => {
+              return (
+                <People match={routerProps.match}
+                  info={this.state.data} filtered={filtered} />)
+            }}
+          />
+          <Route
+            path="/child/:eysis"
+            render={routerProps => {
+              console.log(routerProps)
+              return (
+                <PersonDetails 
+                  match={routerProps.match}
+                  info={this.state.data} 
+                  filtered={filtered}
+
+                />
+              )
+            }}
+          />
+
+
+        </Switch>
+
       </div>
     );
   }
